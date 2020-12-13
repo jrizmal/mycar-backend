@@ -1,5 +1,4 @@
 var express = require('express');
-const Fueling = require('../models/Fueling');
 var router = express.Router();
 var debug = require('debug')('mycar-api:routes');
 
@@ -8,8 +7,12 @@ router.get('/', async function(req, res, next) {
   res.json({message:'Hello'})
 });
 
+router.get('/ping/', async function(req, res, next) { 
+  res.json({message:`Hello ${req.user.email}`})
+});
+
 /* Other routes */
-const fuelRouter = require('./fuel')
-router.use('/fuel/',fuelRouter)
+const commonRouter = require('./common')
+router.use('/common/',commonRouter)
 
 module.exports = router;
