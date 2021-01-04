@@ -8,6 +8,8 @@ var logger = require('morgan');
 const db = require('./database')
 var app = express();
 
+/* test2 */
+
 /* Cors */
 const cors = require('cors')
 app.use(cors())
