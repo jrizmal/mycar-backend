@@ -1,6 +1,6 @@
 var express = require('express');
 const authenticated = require('../middleware/authenticated');
-const { Fueling, Tires, Service } = require('../models/common');
+const { Fueling, Tires, Service, FirstAid } = require('../models/common');
 var router = express.Router();
 var debug = require('debug')('mycar-api:routes');
 
@@ -50,4 +50,17 @@ router.post('/services/', async (req, res) => {
     res.json(saved)
 });
 
+/* First aid */
+router.get('/firstaid/', async (req, res) => {
+    const firstaids = await FirstAid.find({ user: req.user.uid }).exec()
+    res.json(firstaids)
+});
+
+router.post('/firstaid/', async (req, res) => {
+    const data = Object.assign({}, req.body, {
+        user: req.user.uid
+    })
+    const saved = await new FirstAid(data).save()
+    res.json(saved)
+});
 module.exports = router;

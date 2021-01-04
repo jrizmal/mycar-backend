@@ -29,8 +29,16 @@ const serviceSchema = new mongoose.Schema({
 })
 const Service = mongoose.model('service', serviceSchema, 'services')
 
+const firstAidSchema = new mongoose.Schema({
+    date: Date,
+    price: Number,
+    user: String,
+})
+
+const FirstAid = mongoose.model('firstaid', firstAidSchema, 'firstaids')
 module.exports = {
     Fueling,
     Tires,
     Service,
+    FirstAid,
 }
