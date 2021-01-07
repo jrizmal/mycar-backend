@@ -1,6 +1,6 @@
 var express = require('express');
 const authenticated = require('../middleware/authenticated');
-const { Fueling, Tires, Service, FirstAid } = require('../models/common');
+const { Fueling, Tires, Service, FirstAid, Registration } = require('../models/common');
 var router = express.Router();
 var debug = require('debug')('mycar-api:routes');
 
@@ -61,6 +61,21 @@ router.post('/firstaid/', async (req, res) => {
         user: req.user.uid
     })
     const saved = await new FirstAid(data).save()
+    res.json(saved)
+});
+module.exports = router;
+
+
+router.get('/registration/', async (req, res) => {
+    const registrations = await Registration.find({ user: req.user.uid }).exec()
+    res.json(registrations)
+});
+
+router.post('/registration/', async (req, res) => {
+    const data = Object.assign({}, req.body, {
+        user: req.user.uid
+    })
+    const saved = await new Registration(data).save()
     res.json(saved)
 });
 module.exports = router;
