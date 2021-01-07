@@ -55,6 +55,16 @@ const technicalSchema = new mongoose.Schema({
     user: String,
 })
 const Technical = mongoose.model('technical', technicalSchema, 'technicals')
+const registrationSchema = new mongoose.Schema({
+    date: Date,
+    price: Number,
+    expiration: Date,
+    user: String,
+})
+const Registration = mongoose.model('registration', registrationSchema, 'registrations')
+
+
+
 module.exports = {
     Fueling,
     Tires,
@@ -62,4 +72,5 @@ module.exports = {
     FirstAid,
     Insurance,
     Technical,
+    Registration,
 }
