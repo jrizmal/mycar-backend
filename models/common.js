@@ -35,11 +35,31 @@ const firstAidSchema = new mongoose.Schema({
     expiration: Date,
     user: String,
 })
-
 const FirstAid = mongoose.model('firstaid', firstAidSchema, 'firstaids')
+
+const insuranceSchema = new mongoose.Schema({
+    date: Date,
+    price: Number,
+    expiration: Date,
+    agency : String,
+    user: String,
+    insurance_type: Number,
+})
+const Insurance = mongoose.model('insurance', insuranceSchema, 'insurances')
+
+const technicalSchema = new mongoose.Schema({
+    vendor: String,
+    date: Date,
+    price: Number,
+    expiration: Date,
+    user: String,
+})
+const Technical = mongoose.model('technical', technicalSchema, 'technicals')
 module.exports = {
     Fueling,
     Tires,
     Service,
     FirstAid,
+    Insurance,
+    Technical,
 }

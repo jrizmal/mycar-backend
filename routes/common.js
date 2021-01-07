@@ -1,6 +1,6 @@
 var express = require('express');
 const authenticated = require('../middleware/authenticated');
-const { Fueling, Tires, Service, FirstAid } = require('../models/common');
+const { Fueling, Tires, Service, FirstAid, Technical, Insurance } = require('../models/common');
 var router = express.Router();
 var debug = require('debug')('mycar-api:routes');
 
@@ -61,6 +61,34 @@ router.post('/firstaid/', async (req, res) => {
         user: req.user.uid
     })
     const saved = await new FirstAid(data).save()
+    res.json(saved)
+});
+module.exports = router;
+
+router.get('/technical/', async (req, res) => {
+    const technicals = await Technical.find({ user: req.user.uid }).exec()
+    res.json(technicals)
+});
+
+router.post('/technical/', async (req, res) => {
+    const data = Object.assign({}, req.body, {
+        user: req.user.uid
+    })
+    const saved = await new Technical(data).save()
+    res.json(saved)
+});
+module.exports = router;
+
+router.get('/insurance/', async (req, res) => {
+    const insurances = await Insurance.find({ user: req.user.uid }).exec()
+    res.json(insurances)
+});
+
+router.post('/insurance/', async (req, res) => {
+    const data = Object.assign({}, req.body, {
+        user: req.user.uid
+    })
+    const saved = await new Insurance(data).save()
     res.json(saved)
 });
 module.exports = router;
