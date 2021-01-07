@@ -35,11 +35,22 @@ const firstAidSchema = new mongoose.Schema({
     expiration: Date,
     user: String,
 })
-
 const FirstAid = mongoose.model('firstaid', firstAidSchema, 'firstaids')
+
+const registrationSchema = new mongoose.Schema({
+    date: Date,
+    price: Number,
+    expiration: Date,
+    user: String,
+})
+const Registration = mongoose.model('registration', registrationSchema, 'registrations')
+
+
+
 module.exports = {
     Fueling,
     Tires,
     Service,
     FirstAid,
+    Registration,
 }
