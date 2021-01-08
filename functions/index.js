@@ -28,7 +28,7 @@ exports.mycarNotifications = functions.https.onRequest(async (req, res) => {
             for (const reg of registrations) {
                 const exp = reg.expiration
                 const diff = exp - dateNow
-                if (diff < 1000 * 60 * 60 * 24 * 7) {
+                if (diff < 1000 * 60 * 60 * 24 * 7 && diff > 0) {
                     sent.push({
                         fcm_key: user.fcm_id,
                         message: "V kratkem vam poteče registracija.",
@@ -42,7 +42,7 @@ exports.mycarNotifications = functions.https.onRequest(async (req, res) => {
             for (const fa of firstaids) {
                 const exp = fa.expiration
                 const diff = exp - dateNow
-                if (diff < 1000 * 60 * 60 * 24 * 7) {
+                if (diff < 1000 * 60 * 60 * 24 * 7 && diff > 0) {
                     sent.push({
                         fcm_key: user.fcm_id,
                         message: "V kratkem vam poteče prva pomoč.",
