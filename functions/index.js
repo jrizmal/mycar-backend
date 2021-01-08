@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const { User } = require("./models/user")
 const functions = require('firebase-functions');
-const { Registration } = require('./models/common');
+const { Registration, FirstAid } = require('./models/common');
 const { warn } = require("firebase-functions/lib/logger");
 
-/* const admin = require('firebase-admin');
-admin.initializeApp(); */
+const admin = require('firebase-admin');
+admin.initializeApp();
 
 exports.mycarNotifications = functions.https.onRequest(async (req, res) => {
 
@@ -18,39 +18,59 @@ exports.mycarNotifications = functions.https.onRequest(async (req, res) => {
         return
     });
 
-
-
     db.once('open', async function () {
-        warn("Db connected")
-        /* Fetch all users */
-        warn("Fetching users")
         const users = await User.find({ notifications: true }).exec()
         const dateNow = Date.now()
-        warn("Date now: ", dateNow)
         let sent = []
-        warn("Iterating through users")
-        for (const user in users) {
-            warn("New user")
-            // warn("User: ",user)
-            /* Fetch all registrations */
-            warn("Fetching registrations")
+        for (const user of users) {
+            /* Registracija */
             const registrations = await Registration.find({ user: user.fbid }).exec()
-            for (const reg in registrations) {
+            for (const reg of registrations) {
                 const exp = reg.expiration
-                warn("Expiration: ",exp)
                 const diff = exp - dateNow
                 if (diff < 1000 * 60 * 60 * 24 * 7) {
-                    warn("Reg found")
                     sent.push({
                         fcm_key: user.fcm_id,
-                        type: "Registration",
+                        message: "V kratkem vam poteče registracija.",
                         date: exp
                     })
                 }
             }
 
+            /* Prva pomoč */
+            const firstaids = await FirstAid.find({ user: user.fbid }).exec()
+            for (const fa of firstaids) {
+                const exp = fa.expiration
+                const diff = exp - dateNow
+                if (diff < 1000 * 60 * 60 * 24 * 7) {
+                    sent.push({
+                        fcm_key: user.fcm_id,
+                        message: "V kratkem vam poteče prva pomoč.",
+                        date: exp
+                    })
+                }
+            }
         }
-        res.json(sent)
+        for (const msg of sent) {
+            await admin.messaging().send({
+                notification: {
+                    title: "myCar",
+                    body: msg.message,
+                    imageUrl: "https://assets.change.org/photos/7/li/lf/RslIlFDZYdbduwG-800x450-noPad.jpg"
+                },
+                token: msg.fcm_key,
+                webpush: {
+                    fcmOptions: {
+                        link: "https://mycar-6d0a2.web.app/dashboard",
+                    }
+                },
+                android: {
+                    priority: "high",
+                }
+            })
+        }
+        res.send(`Sent ${sent.length} messages.`)
+
     });
 
     /* module.exports = db
