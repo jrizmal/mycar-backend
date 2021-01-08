@@ -51,12 +51,13 @@ exports.mycarNotifications = functions.https.onRequest(async (req, res) => {
                 }
             }
         }
+        let msg_promises = []
         for (const msg of sent) {
-            await admin.messaging().send({
+            msg_promises.push(admin.messaging().send({
                 notification: {
                     title: "myCar",
                     body: msg.message,
-                    imageUrl: "https://assets.change.org/photos/7/li/lf/RslIlFDZYdbduwG-800x450-noPad.jpg"
+                    imageUrl: "https://i.ibb.co/qW5hCyc/logo.png"
                 },
                 token: msg.fcm_key,
                 webpush: {
@@ -67,8 +68,9 @@ exports.mycarNotifications = functions.https.onRequest(async (req, res) => {
                 android: {
                     priority: "high",
                 }
-            })
+            }))
         }
+        await Promise.all(msg_promises)
         res.send(`Sent ${sent.length} messages.`)
 
     });
